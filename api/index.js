@@ -151,8 +151,10 @@ wss.on('connection', (connection, req) => {
       const token = tokenCookieString.split('=')[1];
       if (token) {
         jwt.verify(token, jwtSecret, {}, (err, userData) => {
+          console.log({err, userData})
           if (err) throw err;
           const {userId, username} = userData;
+
           connection.userId = userId;
           connection.username = username;
         });
@@ -164,6 +166,7 @@ wss.on('connection', (connection, req) => {
     const messageData = JSON.parse(message.toString());
     const {recipient, text, file} = messageData;
     let filename = null;
+
     if (file) {
       console.log('size', file.data.length);
       const parts = file.name.split('.');
@@ -175,6 +178,7 @@ wss.on('connection', (connection, req) => {
         console.log('file saved:'+path);
       });
     }
+
     if (recipient && (text || file)) {
       const messageDoc = await Message.create({
         sender:connection.userId,
@@ -193,6 +197,7 @@ wss.on('connection', (connection, req) => {
           _id:messageDoc._id,
         })));
     }
+
   });
 
   // notify everyone about online people (when someone connects)
