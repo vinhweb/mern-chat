@@ -147,11 +147,12 @@ wss.on('connection', (connection, req) => {
   const cookies = req.headers.cookie;
   if (cookies) {
     const tokenCookieString = cookies.split(';').find(str => str.startsWith('token='));
+    // todo: change this way because cookies wont' work in igconitor mode
+
     if (tokenCookieString) {
       const token = tokenCookieString.split('=')[1];
       if (token) {
         jwt.verify(token, jwtSecret, {}, (err, userData) => {
-          console.log({err, userData})
           if (err) throw err;
           const {userId, username} = userData;
 
